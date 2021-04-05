@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.AspNetCore.Identity;
 
 namespace ElectronicStore.Models
@@ -11,5 +12,7 @@ namespace ElectronicStore.Models
         public DateTime CrateDate { get; set; }
         public string Phone { get; set; }
         public string Address { get; set; }
+
+        public virtual List<Shop> Shops { get; set; }
     }
 }

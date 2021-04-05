@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElectronicStore.Models
 {
@@ -8,8 +9,33 @@ namespace ElectronicStore.Models
         public string Name { get; set; }
         public DateTime CreateDate { get; private set; } = DateTime.Now;
         public DateTime ChangeDate { get; set; }
+        
+        /// <summary>
+        /// Всего поставлено
+        /// </summary>
+        public int TotalDelivered { get; set; }
+        
+        /// <summary>
+        /// Продано Всего
+        /// </summary>
+        public int Sold { get; set; }
+        
+        /// <summary>
+        /// Дата поставки 
+        /// </summary>
+        public DateTime DeliveryDate { get; set; } = DateTime.Now;
+        
+        /// <summary>
+        /// Осталось всего
+        /// </summary>
+        [NotMapped]
+        public int Quantity => TotalDelivered - Sold;
+        
+        /// <summary>
+        /// Добавлено в корзину
+        /// </summary>
+        public int AddedToCart { get; set; }
         public decimal Price { get; set; }
-        public int Quantity { get; set; }
         public string Description { get; set; }
         public string ImgPath { get; set; }
 

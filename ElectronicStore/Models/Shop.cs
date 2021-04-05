@@ -41,6 +41,14 @@ namespace ElectronicStore.Models
         public int ProductId { get; set; }
         public virtual Product Product { get; set; }
 
-        
+        public Shop()
+        {
+        }
+
+        public Shop(string сlientId, int productId)
+        {
+            СlientId = сlientId;
+            ProductId = productId;
+        }
     }
 }
