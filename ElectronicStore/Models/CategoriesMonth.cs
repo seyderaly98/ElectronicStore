@@ -10,9 +10,9 @@ namespace ElectronicStore.Models
         public DateTime ChangeDate { get; set; }
 
         public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
 
         public string AuthorId { get; set; }
-        public User Author { get; set; }
+        public virtual User Author { get; set; }
     }
 }

@@ -36,10 +36,10 @@ namespace ElectronicStore.Models
         public string Description { get; set; }
         
         public string СlientId { get; set; }
-        public User Client { get; set; }
+        public virtual User Client { get; set; }
 
         public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
 
         
     }
