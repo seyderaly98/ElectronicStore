@@ -11,9 +11,13 @@ namespace ElectronicStore.Models
         public decimal Price { get; set; }
         public int Quantity { get; set; }
         public string Description { get; set; }
+        public string ImgPath { get; set; }
+
+        public int SubcategoryId { get; set; }
+        public virtual Subcategory Subcategory { get; set; }
 
         public int CategoryId { get; set; }
-        public int Category { get; set; }
+        public virtual Category Category { get; set; }
 
         public string AuthorId { get; set; }
         public virtual User User { get; set; }

@@ -11,8 +11,6 @@ namespace ElectronicStore.Models
         public DateTime ChangeDate { get; set; }
         
         public virtual List<Subcategory> Subcategory { get; set; }
-
-        public int ProductId { get; set; }
-        public virtual Product Product { get; set; }
+        public virtual List<Product> Products { get; set; }
     }
 }

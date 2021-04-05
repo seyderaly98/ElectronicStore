@@ -41,7 +41,9 @@ namespace ElectronicStore.Controllers
         
         public IActionResult Shop()
         {
-            return View();
+            var products = _db.Products.ToList();
+            ViewBag.Categories  = _db.Categories.ToList();
+            return View(products);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
