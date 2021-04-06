@@ -1,5 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Http
-@using Microsoft.AspNetCore.Routing
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Routing 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,7 +35,7 @@
                         <i class="fa fa-envelope mx-2"></i>
                         <a class="navbar-sm-brand text-light text-decoration-none" href="mailto:info@company.com">AibekInfo@company.com</a>
                         <i class="fa fa-phone mx-2"></i>
-                        <a class="navbar-sm-brand text-light text-decoration-none" href="tel:010-020-0340">+77-707-0707</a>
+                        <a class="navbar-sm-brand text-light text-decoration-none" href="tel:010-020-0340">+77-707-007-0707</a>
                     </div>
                     <div>
                         <a class="text-light" href="https://fb.com/templatemo" target="_blank" rel="sponsored"><i class="fab fa-facebook-f fa-sm fa-fw me-2"></i></a>
@@ -87,14 +89,27 @@
                         <a class="nav-icon d-none d-lg-inline" href="#" data-bs-toggle="modal" data-bs-target="#templatemo_search">
                             <i class="fa fa-fw fa-search text-dark mr-2"></i>
                         </a>
-                        <a class="nav-icon position-relative text-decoration-none" href="#">
-                            <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
-                            <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span>
-                        </a>
-                        <a class="nav-icon position-relative text-decoration-none" href="#">
-                            <i class="fa fa-fw fa-user text-dark mr-3"></i>
-                            <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">+99</span>
-                        </a>
+                         @if (User.Identity.IsAuthenticated)
+                         {
+                             <a class="nav-icon position-relative text-decoration-none" href="#">
+                                <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
+                                 <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">7</span>
+                             </a>
+                             <a class="nav-icon position-relative text-decoration-none" asp-action="Index" asp-controller="Users">
+                                <i class="fa fa-fw fa-user text-dark mr-3"></i>
+                                <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">+99</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="nav-icon position-relative text-decoration-none" href="#">
+                                <i class="fa fa-fw fa-cart-arrow-down text-dark mr-1"></i>
+                                <span class="position-absolute top-0 left-100 translate-middle badge rounded-pill bg-light text-dark">0</span>
+                            </a>
+                            <a class="nav-icon position-relative text-decoration-none" asp-action="Login" asp-controller="Account">
+                                        <i class="fas fa-sign-in-alt" ></i>
+                            </a>
+                        }
                     </div>
                 </div>
     
@@ -111,37 +126,22 @@
             <div class="col-lg-3">
                 <h1 class="h2 pb-4">Панель управления</h1>
                 <ul class="list-unstyled templatemo-accordion">
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Gender
-                            <i class="fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul class="collapse show list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Men</a></li>
-                            <li><a class="text-decoration-none" href="#">Women</a></li>
-                        </ul>
-                    </li>
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Sale
-                            <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul id="collapseTwo" class="collapse list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Sport</a></li>
-                            <li><a class="text-decoration-none" href="#">Luxury</a></li>
-                        </ul>
-                    </li>
-                    <li class="pb-3">
-                        <a class="collapsed d-flex justify-content-between h3 text-decoration-none" href="#">
-                            Product
-                            <i class="pull-right fa fa-fw fa-chevron-circle-down mt-1"></i>
-                        </a>
-                        <ul id="collapseThree" class="collapse list-unstyled pl-3">
-                            <li><a class="text-decoration-none" href="#">Bag</a></li>
-                            <li><a class="text-decoration-none" href="#">Sweather</a></li>
-                            <li><a class="text-decoration-none" href="#">Sunglass</a></li>
-                        </ul>
-                    </li>
+                    @foreach (Category category in ViewBag.Categories)
+                    {
+                        <li class="pb-3">
+                            <a style="cursor: pointer" class="collapsed d-flex justify-content-between h3 text-decoration-none" >
+                                @category.Name
+                            </a>
+                            <ul class="collapse show list-unstyled pl-3">
+                                @foreach (Subcategory subcategory in category.Subcategory)
+                                {
+                                    <li>
+                                        <a style="cursor: pointer" class="text-decoration-none" onclick="Category('@category.Name','@subcategory.Name')">@subcategory.Name</a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
                 </ul>
             </div>
             @RenderBody()
@@ -152,98 +152,102 @@
 else
 {
     @RenderBody()
-
 }
 
 <footer class="bg-dark" id="tempaltemo_footer">
-           <div class="container">
-               <div class="row">
+    <div class="container">
+        <div class="row">
    
-                   <div class="col-md-4 pt-5">
-                       <h2 class="h2 text-success border-bottom pb-3 border-light logo">Aibek Shop</h2>
-                       <ul class="list-unstyled text-light footer-link-list">
-                           <li>
-                               <i class="fas fa-map-marker-alt fa-fw"></i>
-                               ​Толе би, 100​Байтурсынова, 44
-                           </li>
-                           <li>
-                               <i class="fa fa-phone fa-fw"></i>
-                               <a class="text-decoration-none" href="tel:010-020-0340">+77-707-0707</a>
-                           </li>
-                           <li>
-                               <i class="fa fa-envelope fa-fw"></i>
-                               <a class="text-decoration-none" href="mailto:info@company.com">AiberInfo@company.com</a>
-                           </li>
-                       </ul>
-                   </div>
+            <div class="col-md-4 pt-5">
+                <h2 class="h2 text-success border-bottom pb-3 border-light logo">Aibek Shop</h2>
+                <ul class="list-unstyled text-light footer-link-list">
+                    <li>
+                        <i class="fas fa-map-marker-alt fa-fw"></i>
+                        Толе би, 100​Байтурсынова, 44
+                    </li>
+                    <li>
+                        <i class="fa fa-phone fa-fw"></i>
+                        <a class="text-decoration-none" href="tel:010-020-0340">+77-707-007-0707</a>
+                    </li>
+                    <li>
+                        <i class="fa fa-envelope fa-fw"></i>
+                        <a class="text-decoration-none" href="mailto:info@company.com">AiberInfo@company.com</a>
+                    </li>
+                </ul>
+            </div>
    
-                   <div class="col-md-4 pt-5">
-                       <h2 class="h2 text-light border-bottom pb-3 border-light">Продукты</h2>
-                       <ul class="list-unstyled text-light footer-link-list">
-                           <li><a class="text-decoration-none" href="#">Смартфоны и гаджеты</a></li>
-                           <li><a class="text-decoration-none" href="#">Ноутбуки и аксессуары</a></li>
-                           <li><a class="text-decoration-none" href="#">Ноутбуки и компьютеры</a></li>
-                           <li><a class="text-decoration-none" href="#">Подставки для ноутбуков</a></li>
-                           <li><a class="text-decoration-none" href="#">Аккумуляторы для ноутбуков</a></li>
-                           <li><a class="text-decoration-none" href="#">Рюкзаки</a></li>
-                           <li><a class="text-decoration-none" href="#">Сумки</a></li>
-                       </ul>
-                   </div>
+            <div class="col-md-4 pt-5">
+                <h2 class="h2 text-light border-bottom pb-3 border-light">Продукты</h2>
+                <ul class="list-unstyled text-light footer-link-list">
+                    <li><a class="text-decoration-none" href="#">Смартфоны и гаджеты</a></li>
+                    <li><a class="text-decoration-none" href="#">Ноутбуки и аксессуары</a></li>
+                    <li><a class="text-decoration-none" href="#">Ноутбуки и компьютеры</a></li>
+                    <li><a class="text-decoration-none" href="#">Подставки для ноутбуков</a></li>
+                    <li><a class="text-decoration-none" href="#">Аккумуляторы для ноутбуков</a></li>
+                    <li><a class="text-decoration-none" href="#">Рюкзаки</a></li>
+                    <li><a class="text-decoration-none" href="#">Сумки</a></li>
+                </ul>
+            </div>
    
-                   <div class="col-md-4 pt-5">
-                       <h2 class="h2 text-light border-bottom pb-3 border-light">Доп. Информация</h2>
-                       <ul class="list-unstyled text-light footer-link-list">
-                           <li><a class="text-decoration-none" asp-action="Index">Главная</a></li>
-                           <li><a class="text-decoration-none" asp-action="About">О нас</a></li>
-                           <li><a class="text-decoration-none" href="#">Расположение магазина</a></li>
-                           <li><a class="text-decoration-none" href="#">FAQs</a></li>
-                           <li><a class="text-decoration-none" asp-action="Сontact">Контакты</a></li>
-                       </ul>
-                   </div>
-               </div>
-               <div class="row text-light mb-4">
-                   <div class="col-12 mb-3">
-                       <div class="w-100 my-3 border-top border-light"></div>
-                   </div>
-                   <div class="col-auto me-auto">
-                       <ul class="list-inline text-left footer-icons">
-                           <li class="list-inline-item border border-light rounded-circle text-center">
-                               <a class="text-light text-decoration-none" target="_blank" href="http://facebook.com/"><i class="fab fa-facebook-f fa-lg fa-fw"></i></a>
-                           </li>
-                           <li class="list-inline-item border border-light rounded-circle text-center">
-                               <a class="text-light text-decoration-none" target="_blank" href="https://www.instagram.com/"><i class="fab fa-instagram fa-lg fa-fw"></i></a>
-                           </li>
-                           <li class="list-inline-item border border-light rounded-circle text-center">
-                               <a class="text-light text-decoration-none" target="_blank" href="https://twitter.com/"><i class="fab fa-twitter fa-lg fa-fw"></i></a>
-                           </li>
-                           <li class="list-inline-item border border-light rounded-circle text-center">
-                               <a class="text-light text-decoration-none" target="_blank" href="https://www.linkedin.com/"><i class="fab fa-linkedin fa-lg fa-fw"></i></a>
-                           </li>
-                       </ul>
-                   </div>
-                   <div class="col-auto">
-                       <label class="sr-only" for="subscribeEmail">Адрес электронной почты</label>
-                       <div class="input-group mb-2">
-                           <input type="text" class="form-control bg-dark border-light" id="subscribeEmail" placeholder="Email address">
-                           <div class="input-group-text btn-success text-light">Подписаться</div>
-                       </div>
-                   </div>
-               </div>
-           </div>
+            <div class="col-md-4 pt-5">
+                <h2 class="h2 text-light border-bottom pb-3 border-light">Доп. Информация</h2>
+                <ul class="list-unstyled text-light footer-link-list">
+                    <li><a class="text-decoration-none" asp-action="Index">Главная</a></li>
+                    <li><a class="text-decoration-none" asp-action="About">О нас</a></li>
+                    <li><a class="text-decoration-none" href="#">Расположение магазина</a></li>
+                    <li><a class="text-decoration-none" href="#">FAQs</a></li>
+                    <li><a class="text-decoration-none" asp-action="Сontact">Контакты</a></li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li><a class="text-decoration-none" asp-action="Logout" asp-controller="Account">Выйти</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <div class="row text-light mb-4">
+            <div class="col-12 mb-3">
+                <div class="w-100 my-3 border-top border-light"></div>
+            </div>
+            <div class="col-auto me-auto">
+                <ul class="list-inline text-left footer-icons">
+                    <li class="list-inline-item border border-light rounded-circle text-center">
+                        <a class="text-light text-decoration-none" target="_blank" href="http://facebook.com/"><i class="fab fa-facebook-f fa-lg fa-fw"></i></a>
+                    </li>
+                    <li class="list-inline-item border border-light rounded-circle text-center">
+                        <a class="text-light text-decoration-none" target="_blank" href="https://www.instagram.com/"><i class="fab fa-instagram fa-lg fa-fw"></i></a>
+                    </li>
+                    <li class="list-inline-item border border-light rounded-circle text-center">
+                        <a class="text-light text-decoration-none" target="_blank" href="https://twitter.com/"><i class="fab fa-twitter fa-lg fa-fw"></i></a>
+                    </li>
+                    <li class="list-inline-item border border-light rounded-circle text-center">
+                        <a class="text-light text-decoration-none" target="_blank" href="https://www.linkedin.com/"><i class="fab fa-linkedin fa-lg fa-fw"></i></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-auto">
+                <label class="sr-only" for="subscribeEmail">Адрес электронной почты</label>
+                <div class="input-group mb-2">
+                    <input type="text" class="form-control bg-dark border-light" id="subscribeEmail" placeholder="Email address">
+                    <div class="input-group-text btn-success text-light">Подписаться</div>
+                </div>
+            </div>
+        </div>
+    </div>
    
-           <div class="w-100 bg-black py-3">
-               <div class="container">
-                   <div class="row pt-2">
-                       <div class="col-12">
-                           <p class="text-left text-light">
-                               Copyright &copy; 2021 AibekStore 
-                               | Разработано <a rel="sponsored" href="#" target="_blank">Aibek</a>
-                           </p>
-                       </div>
-                   </div>
-               </div>
-           </div>
+    <div class="w-100 bg-black py-3">
+        <div class="container">
+            <div class="row pt-2">
+                <div class="col-12">
+                    <p class="text-left text-light">
+                        Copyright &copy; 2021 AibekStore 
+                        | Разработано <a rel="sponsored" href="#" target="_blank">Aibek</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </footer>
+
 <script src="~/lib/jquery/dist/jquery.min.js"></script>
 <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script src="~/js/site.js" asp-append-version="true"></script>
@@ -254,7 +258,24 @@ else
 <script src="~/assets/js/bootstrap.bundle.min.js"></script>
 <script src="~/assets/js/templatemo.js"></script>
 <script src="~/assets/js/custom.js"></script>
-<!-- End Script -->
+<script >
+
+ function Category(category,subcategory) {
+                                $.ajax({
+                                    url: '@Url.Action("ControlPanelAjax", "Users")?Category=' + category + '&subcategory=' + subcategory + '&status=' + $('#selectedStatus').val(),
+                                    type: 'POST',
+                                    success: function (data) {
+                                        if (data === false)
+                                        {
+                                                                                            
+                                        }      
+                                        else{
+                                            $('#ControlPanelTable').html(data);
+                                        }
+                                    }
+                                })
+                        }
+</script>>    
 
 @await RenderSectionAsync("Scripts", required: false)
 </body>

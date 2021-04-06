@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ElectronicStore.Models
@@ -38,6 +39,8 @@ namespace ElectronicStore.Models
         public decimal Price { get; set; }
         public string Description { get; set; }
         public string ImgPath { get; set; }
+        public string Specification { get; set; }
+        public string Brand { get; set; }
 
         public int SubcategoryId { get; set; }
         public virtual Subcategory Subcategory { get; set; }
@@ -47,5 +50,6 @@ namespace ElectronicStore.Models
 
         public string AuthorId { get; set; }
         public virtual User User { get; set; }
+        public virtual List<Shop> Shop { get; set; }
     }
 }

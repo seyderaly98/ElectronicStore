@@ -31,18 +31,34 @@ namespace ElectronicStore.Controllers
         public async Task<IActionResult> AddShoppingCart(int productId)
         {
             if (!_db.Products.Any(p => p.Id == productId)) return Json(false);
-            
+            Product product = await _db.Products.FirstOrDefaultAsync(p => p.Id == productId);
+            product.AddedToCart += 1;
             Shop shop = new Shop(UserManager.GetUserId(User),productId);
             await _db.Shops.AddAsync(shop);
             await _db.SaveChangesAsync();
-            ViewBag.ControlPanel = true;
             return Json(true);
         }
 
-        public async Task<IActionResult> ControlPanel()
+        public async Task<IActionResult> Details(int productId)
         {
-            var products = await _db.Products.ToListAsync();
-            return View(products);
+            var product = await _db.Products.FirstOrDefaultAsync(p => p.Id == productId);
+            if (product != null)
+            {
+                return View(product);
+            }
+            return NotFound();
         }
+
+        [HttpPost]
+        public async Task<IActionResult> BuyProject(int productId)
+        {
+            if (!_db.Products.Any(p => p.Id == productId)) return Json(false);
+            Shop shop = new Shop(UserManager.GetUserId(User),productId){Status = ShopStatus.InProcessing};
+            await _db.Shops.AddAsync(shop);
+            await _db.SaveChangesAsync();
+            return Json(true);
+        }
+
+        
     }
 }

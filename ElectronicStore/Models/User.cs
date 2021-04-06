@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ElectronicStore.ViewModel;
 using Microsoft.AspNetCore.Identity;
 
 namespace ElectronicStore.Models
@@ -14,5 +15,16 @@ namespace ElectronicStore.Models
         public string Address { get; set; }
 
         public virtual List<Shop> Shops { get; set; }
+        
+        public User()
+        {
+        }
+        public User(Register model)
+        {
+            Email = model.Email;
+            Name = model.Name;
+            Surname = model.SurName;
+
+        }
     }
 }

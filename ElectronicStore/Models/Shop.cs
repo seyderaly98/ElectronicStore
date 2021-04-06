@@ -8,29 +8,26 @@ namespace ElectronicStore.Models
         /// В обработке 
         /// </summary>
         InProcessing,
-        
         /// <summary>
         /// Отправлено 
         /// </summary>
         Shipped,
-        
         /// <summary>
         /// В корзине 
         /// </summary>
         ShoppingСart,
-        
         /// <summary>
-        /// Доставлено 
+        /// Продано
         /// </summary>
-        Delivered,
-        
+        Sold,
+        None
     }
     
     public class Shop
     {
         public int Id { get; set; }
         
-        public ShopStatus Type { get; set; } = ShopStatus.ShoppingСart;
+        public ShopStatus Status { get; set; } = ShopStatus.ShoppingСart;
         public DateTime CreateDate { get; private set; } = DateTime.Now;
         public DateTime ChangeDate { get; set; }
         public string Description { get; set; }

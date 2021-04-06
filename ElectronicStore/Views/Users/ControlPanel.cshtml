@@ -1,0 +1,43 @@
+﻿@model List<Product>
+
+@{
+    ViewBag.Title = "Панель управления";
+    Layout = "_Layout";
+}
+
+<div class="col-lg-9" >
+    <div class="row">
+        <div class="col-md-6">
+            <ul class="list-inline shop-top-menu pb-3 pt-1">
+                <li class="list-inline-item">
+                    <a class="h3 text-dark text-decoration-none mr-3" href="#">Все</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="h3 text-dark text-decoration-none mr-3" href="#">Склад</a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="h3 text-dark text-decoration-none" href="#">Продано</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-6 pb-4">
+            <div class="d-flex">
+                <select id="selectedStatus" class="form-control">
+                    <option value="@ShopStatus.None">Статус не выбран</option>
+                    <option value="@ShopStatus.ShoppingСart">Добавлено в корзину</option>
+                    <option value="@ShopStatus.InProcessing">В обработке</option>
+                    <option value="@ShopStatus.Shipped">Отправлено</option>
+                    <option value="@ShopStatus.Sold">Продано</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div  id="ControlPanelTable">
+        
+        @{
+            await Html.RenderPartialAsync("Partial/PartialControlPanel", Model);
+        }
+    </div>
+    
+</div>
+
