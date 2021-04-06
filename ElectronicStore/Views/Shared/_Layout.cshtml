@@ -258,8 +258,9 @@ else
 <script src="~/assets/js/bootstrap.bundle.min.js"></script>
 <script src="~/assets/js/templatemo.js"></script>
 <script src="~/assets/js/custom.js"></script>
-<script >
-
+@if (User.IsInRole("Admin"))
+{
+    <script >
  function Category(category,subcategory) {
                                 $.ajax({
                                     url: '@Url.Action("ControlPanelAjax", "Users")?Category=' + category + '&subcategory=' + subcategory + '&status=' + $('#selectedStatus').val(),
@@ -275,8 +276,8 @@ else
                                     }
                                 })
                         }
-</script>>    
-
+</script>
+}
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ElectronicStore.Models;
 using ElectronicStore.Models.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace ElectronicStore.Controllers
 {
@@ -41,9 +42,25 @@ namespace ElectronicStore.Controllers
         
         public IActionResult Shop()
         {
-            var products = _db.Products.ToList();
+            var products = _db.Products.Take(9).ToList();
             ViewBag.Categories  = _db.Categories.ToList();
             return View(products);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ShopAjax(string category = "все",string subcategory = "все")
+        {
+            List<Product> products;
+            if (category.Contains("все") && subcategory.Contains("все"))
+                products = await _db.Products.Take(9).ToListAsync();
+            else
+            {
+                if (subcategory.Contains("все"))
+                    products = await _db.Products.Where(p => p.Category.Name.ToLower().Contains(category.ToLower())).Take(9).ToListAsync();
+                else
+                    products = await _db.Products.Where(p => p.Subcategory.Name.ToLower().Contains(subcategory.ToLower())).Take(9).ToListAsync();
+            }
+            return PartialView("Partial/PartialShopTable",products);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
