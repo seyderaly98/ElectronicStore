@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using ElectronicStore.Models;
 using ElectronicStore.Models.Data;
+using ElectronicStore.ViewModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace ElectronicStore.Controllers
@@ -40,27 +41,35 @@ namespace ElectronicStore.Controllers
             return View();
         }
         
-        public IActionResult Shop()
+        public async Task<IActionResult> Shop(int page = 1)
         {
-            var products = _db.Products.Take(9).ToList();
+            int pageSize = 9; // количество объектов на страницу
+            List<Product> phonesPerPages= await _db.Products.Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems= _db.Products.Count()};
+            IndexViewModel ivm = new IndexViewModel { PageInfo = pageInfo, Products = phonesPerPages };
             ViewBag.Categories  = _db.Categories.ToList();
-            return View(products);
+            return View(ivm);
         }
         
-        [HttpPost]
-        public async Task<IActionResult> ShopAjax(string category = "все",string subcategory = "все")
+        [HttpPost] // Рефакторинг
+        public async Task<IActionResult> ShopAjax(int page = 1, string category = "все",string subcategory = "все")
         {
             List<Product> products;
             if (category.Contains("все") && subcategory.Contains("все"))
-                products = await _db.Products.Take(9).ToListAsync();
+                products = await _db.Products.ToListAsync();
             else
             {
                 if (subcategory.Contains("все"))
-                    products = await _db.Products.Where(p => p.Category.Name.ToLower().Contains(category.ToLower())).Take(9).ToListAsync();
+                    products = await _db.Products.Where(p => p.Category.Name.ToLower().Contains(category.ToLower())).ToListAsync();
                 else
-                    products = await _db.Products.Where(p => p.Subcategory.Name.ToLower().Contains(subcategory.ToLower())).Take(9).ToListAsync();
+                    products = await _db.Products.Where(p => p.Subcategory.Name.ToLower().Contains(subcategory.ToLower())).ToListAsync();
             }
-            return PartialView("Partial/PartialShopTable",products);
+            
+            int pageSize = 9; // количество объектов на страницу
+            List<Product> phonesPerPages=  products.Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems= products.Count()};
+            IndexViewModel ivm = new IndexViewModel { PageInfo = pageInfo, Products = phonesPerPages };
+            return PartialView("Partial/PartialShopTable",ivm);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
