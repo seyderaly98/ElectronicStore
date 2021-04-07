@@ -27,8 +27,6 @@ namespace ElectronicStore.Controllers
         // GET
         public IActionResult Index()
         {
-            if (User.IsInRole(Convert.ToString(RoleInitializer.Roles.Admin)))
-                return  RedirectToAction("ControlPanel","Users");
             return View();
         }
         

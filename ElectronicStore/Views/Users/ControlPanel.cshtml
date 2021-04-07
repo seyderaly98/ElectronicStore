@@ -5,39 +5,84 @@
     Layout = "_Layout";
 }
 
-<div class="col-lg-9" >
+<div class="container py-5">
     <div class="row">
-        <div class="col-md-6">
-            <ul class="list-inline shop-top-menu pb-3 pt-1">
-                <li class="list-inline-item">
-                    <a class="h3 text-dark text-decoration-none mr-3" href="#">Все</a>
-                </li>
-                <li class="list-inline-item">
-                    <a class="h3 text-dark text-decoration-none mr-3" href="#">Склад</a>
-                </li>
-                <li class="list-inline-item">
-                    <a class="h3 text-dark text-decoration-none" href="#">Продано</a>
-                </li>
+        <div class="col-lg-3">
+            <h1 class="h2 pb-4">Панель управления</h1>
+            <ul class="list-unstyled templatemo-accordion">
+                @foreach (Category category in ViewBag.Categories)
+                {
+                    <li class="pb-3">
+                        <a style="cursor: pointer" class="collapsed d-flex justify-content-between h3 text-decoration-none">
+                            @category.Name
+                        </a>
+                        <ul class="collapse show list-unstyled pl-3">
+                            @foreach (Subcategory subcategory in category.Subcategory)
+                            {
+                                <li>
+                                    <a style="cursor: pointer" class="text-decoration-none" onclick="Category('@category.Name','@subcategory.Name')">@subcategory.Name</a>
+                                </li>
+                            }
+                        </ul>
+                    </li>
+                }
             </ul>
         </div>
-        <div class="col-md-6 pb-4">
-            <div class="d-flex">
-                <select id="selectedStatus" class="form-control">
-                    <option value="@ShopStatus.None">Статус не выбран</option>
-                    <option value="@ShopStatus.ShoppingСart">Добавлено в корзину</option>
-                    <option value="@ShopStatus.InProcessing">В обработке</option>
-                    <option value="@ShopStatus.Shipped">Отправлено</option>
-                    <option value="@ShopStatus.Sold">Продано</option>
-                </select>
+        <div class="col-lg-9">
+            <div class="row">
+                <div class="col-md-6">
+                    <ul class="list-inline shop-top-menu pb-3 pt-1">
+                        <li class="list-inline-item">
+                            <a class="h3 text-dark text-decoration-none mr-3" onclick="Category('все','все')">Все</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="h3 text-dark text-decoration-none mr-3" href="#">Склад</a>
+                        </li>
+                        <li class="list-inline-item">
+                            <a class="h3 text-dark text-decoration-none" href="#">Продано</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6 pb-4">
+                    <div class="d-flex">
+                        <select id="selectedStatus" class="form-control">
+                            <option value="@ShopStatus.None">Статус не выбран</option>
+                            <option value="@ShopStatus.ShoppingСart">Добавлено в корзину</option>
+                            <option value="@ShopStatus.InProcessing">В обработке</option>
+                            <option value="@ShopStatus.Shipped">Отправлено</option>
+                            <option value="@ShopStatus.Sold">Продано</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div id="ControlPanelTable">
+
+                @{
+                    await Html.RenderPartialAsync("Partial/PartialControlPanel", Model);
+                }
             </div>
         </div>
     </div>
-    <div  id="ControlPanelTable">
-        
-        @{
-            await Html.RenderPartialAsync("Partial/PartialControlPanel", Model);
-        }
-    </div>
-    
 </div>
 
+
+@section Scripts
+{
+        <script >
+     function Category(category,subcategory) {
+                                    $.ajax({
+                                        url: '@Url.Action("ControlPanelAjax", "Users")?Category=' + category + '&subcategory=' + subcategory + '&status=' + $('#selectedStatus').val(),
+                                        type: 'POST',
+                                        success: function (data) {
+                                            if (data === false)
+                                            {
+                                                                                                
+                                            }      
+                                            else{
+                                                $('#ControlPanelTable').html(data);
+                                            }
+                                        }
+                                    })
+                            }
+    </script>
+}
