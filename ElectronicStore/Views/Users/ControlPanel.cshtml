@@ -10,6 +10,23 @@
         <div class="col-lg-3">
             <h1 class="h2 pb-4">Панель управления</h1>
             <ul class="list-unstyled templatemo-accordion">
+                <li class="pb-3">
+                                        <a style="cursor: pointer" class="collapsed d-flex justify-content-between h3 text-decoration-none">
+                                            Категории
+                                        </a>
+                                        <ul class="collapse show list-unstyled pl-3">
+                                            <li>
+                                                <a style="cursor: pointer" onclick="PageCategory()" class="text-decoration-none">Добавить категорию</a>
+                                            </li>
+                                            <li>
+                                                <a style="cursor: pointer" onclick="PageSubcategory()" class="text-decoration-none">Добавить под категорию</a>
+                                            </li>
+                                            <li>
+                                                <a style="cursor: pointer" asp-action="AddProduct" asp-controller="Product" class="text-decoration-none">Добавить продукт</a>
+                                            </li>
+                                            
+                                        </ul>
+                                    </li>
                 @foreach (Category category in ViewBag.Categories)
                 {
                     <li class="pb-3">
@@ -33,7 +50,7 @@
                 <div class="col-md-6">
                     <ul class="list-inline shop-top-menu pb-3 pt-1">
                         <li class="list-inline-item">
-                            <a class="h3 text-dark text-decoration-none mr-3" onclick="Category('все','все')">Все</a>
+                            <a class="h3 text-dark text-decoration-none mr-3" style="cursor: pointer" onclick="Category('все','все')">Все</a>
                         </li>
                         <li class="list-inline-item">
                             <a class="h3 text-dark text-decoration-none mr-3" href="#">Склад</a>
@@ -56,10 +73,30 @@
                 </div>
             </div>
             <div id="ControlPanelTable">
-
+                
+                <div class="input-group mb-3" id="pageCategory" style="display: none">
+                    <input type="text" class="form-control" id="categoryName" placeholder="Наименование категории" aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <button class="btn btn-outline-secondary" onclick="AddCategory()" type="button" id="button-addon2">Добавить</button>
+                </div>
+                <div id="subcategoryGroup" style="display: none">
+                     <div class="input-group mb-3" >
+                         <select class="form-select" id="selectCategoryId" aria-label="Default select example">
+                             @foreach (var s in ViewBag.Categories)
+                             {
+                                 <option value="@s.Id">@s.Name</option>
+                             }
+                         </select>
+                         </div>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" id="subcategoryName" placeholder="Наименование подкатегории" aria-label="Recipient's username" aria-describedby="button-addon2">
+                        <button class="btn btn-outline-secondary" onclick="AddSubcategory()" type="button" id="button-addon2">Добавить</button>
+                    </div>
+                </div>
+                <div id="pageMM">
                 @{
                     await Html.RenderPartialAsync("Partial/PartialControlPanel", Model);
                 }
+                </div>
             </div>
         </div>
     </div>
@@ -68,7 +105,7 @@
 
 @section Scripts
 {
-        <script >
+    <script >
      function Category(category,subcategory) {
                                     $.ajax({
                                         url: '@Url.Action("ControlPanelAjax", "Users")?Category=' + category + '&subcategory=' + subcategory + '&status=' + $('#selectedStatus').val(),
@@ -84,5 +121,54 @@
                                         }
                                     })
                             }
+                            
+      function PageCategory()
+      {           
+           $('#pageMM').hide();
+           $('#subcategoryGroup').hide();
+           $('#pageCategory').show(); 
+      }
+      function PageSubcategory()
+            {           
+                 $('#pageMM').hide();
+                 $('#pageCategory').hide(); 
+                 $('#subcategoryGroup').show();
+
+            }
+            
+      function AddCategory()
+      {
+          $.ajax({
+                                                  url: '@Url.Action("AddCategory", "Users")?categoryName=' + $('#categoryName').val(),
+                                                  type: 'POST',
+                                                  success: function (data) {
+                                                      if (data === true)
+                                                      {
+                                                            alert('Добавлено')  
+                                                            $('#categoryName').val('')                                            
+                                                      }      
+                                                      else{
+                                                          alert('не добавлено')           
+                                                      }
+                                                  }
+                                              })
+          }
+           function AddSubcategory()
+                {
+                    $.ajax({
+                                                            url: '@Url.Action("AddSubcategory", "Users")?categoryId=' + $('#selectCategoryId').val() + '&subcategoryName=' + $('#subcategoryName').val(),
+                                                            type: 'POST',
+                                                            success: function (data) {
+                                                                if (data === true)
+                                                                {
+                                                                      alert('Добавлено')  
+                                                                      $('#subcategoryName').val('')                                            
+                                                                }      
+                                                                else{
+                                                                    alert('не добавлено')           
+                                                                }
+                                                            }
+                                                        })
+                    }
     </script>
 }

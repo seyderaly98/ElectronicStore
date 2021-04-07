@@ -84,5 +84,30 @@ namespace ElectronicStore.Controllers
 
             return PartialView("Partial/PartialControlPanel", products);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> AddCategory(string categoryName)
+        {
+            if (await _db.Categories.AnyAsync(c=>c.Name.ToLower() == categoryName.ToLower())) return Json(false);
+            Category category = new Category() {Name = categoryName};
+            await _db.Categories.AddAsync(category);
+            await _db.SaveChangesAsync();
+            return Json(true);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> AddSubcategory(int categoryId, string subcategoryName)
+        {
+            if (!await _db.Categories.AnyAsync(c=>c.Id == categoryId)) return Json(false);
+            if (await _db.Subcategories.AnyAsync(c=>c.Name.ToLower() == subcategoryName.ToLower())) return Json(false);
+
+            Subcategory subcategory = new Subcategory() {Name = subcategoryName,CategoryId = categoryId};
+            await _db.Subcategories.AddAsync(subcategory);
+            await _db.SaveChangesAsync();
+            return Json(true);
+        }
+
+        
     }
 }

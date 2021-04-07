@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ElectronicStore.Models;
 using ElectronicStore.Models.Data;
+using ElectronicStore.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -28,6 +29,7 @@ namespace ElectronicStore
         public void ConfigureServices(IServiceCollection services)
         {
             string connection = Configuration.GetConnectionString("DefaultConnection");
+            services.AddTransient<UploadService>();
             services.AddDbContext<ElectronicStoreContext>(options => options.UseNpgsql(connection).UseLazyLoadingProxies())
                 .AddIdentity<User, IdentityRole>(options =>
                 {

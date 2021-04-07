@@ -1,0 +1,91 @@
+﻿@model ViewModelProduct
+
+@{
+    ViewBag.Title = "Добавить продукт";
+    Layout = "_Layout";
+}
+<style>
+  .field-validation-error
+  {
+    font-size: 13px!important;
+  }
+</style>
+<div class="container py-5">
+  
+  <div class="row" style="width: 800px; margin: auto">
+
+    <div asp-validation-summary="ModelOnly"></div>
+    <form method="post" asp-action="AddProduct" asp-controller="Product" enctype="multipart/form-data">
+      <div class="form-group">
+        <label  asp-for="Name">Найменоание продукта</label>
+        <input asp-for="Name" class="form-control" placeholder="Найменоание продукта">
+        <span asp-validation-for="Name"></span>
+      </div>
+      <div class="form-group">
+        <label asp-for="Brand">Бренд</label>
+        <input asp-for="Brand" class="form-control">
+        <span asp-validation-for="Brand"></span>
+      </div>
+
+      <div class="form-group">
+        <div class="row">
+          <div class="col">
+            <input asp-for="Price" type="number" class="form-control" placeholder="Цена">
+                    <span asp-validation-for="Price"></span>
+          </div>
+          <div class="col">
+            <input asp-for="TotalDelivered" type="number" class="form-control" placeholder="Количество">
+                    <span asp-validation-for="TotalDelivered"></span>
+
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <select asp-for="CategoryId" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example">
+          <option value="1"  selected>Категории товара</option>
+        </select>
+        <span asp-validation-for="CategoryId"></span>
+
+        <select asp-for="SubcategoryId" class="form-select form-select-sm" aria-label=".form-select-sm example">
+          @foreach (Subcategory subcategory in ViewBag.Subcaegory)
+          {
+            <option value="@subcategory.Id">@subcategory.Name</option>
+          }
+        </select>
+                <span asp-validation-for="SubcategoryId"></span>
+
+      </div>
+
+      <div class="form-group">
+        <label  asp-for="Specification">Спецификация</label>
+        <textarea asp-for="Specification" class="form-control"  rows="3"></textarea>
+                <span asp-validation-for="Specification"></span>
+
+      </div>
+      <div class="form-group">
+        <label asp-for="Description" >Описание продукта</label>
+        <textarea asp-for="Description" class="form-control"  rows="3"></textarea>
+        <span asp-validation-for="Description"></span>
+
+      </div>
+      <div class="form-group">
+        <div class="mb-3">
+          <label for="formFile" class="form-label">Загрузите изображение продукта </label>
+          <input class="form-control" type="file" asp-for="File" id="formFile">
+          <span asp-validation-for="File"></span>
+        </div>
+      </div>
+      
+      <div class="form-group" style="text-align: end" >
+        <button type="submit" class="btn btn-primary">Добавить продукт</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+@section Scripts
+{
+  @{
+    await Html.RenderPartialAsync("_ValidationScriptsPartial");
+  }
+}

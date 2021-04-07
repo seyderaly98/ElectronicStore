@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using ElectronicStore.ViewModel;
 
 namespace ElectronicStore.Models
 {
     public class Product
     {
+
+
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime CreateDate { get; private set; } = DateTime.Now;
@@ -49,7 +52,26 @@ namespace ElectronicStore.Models
         public virtual Category Category { get; set; }
 
         public string AuthorId { get; set; }
-        public virtual User User { get; set; }
+        public virtual User Author { get; set; }
         public virtual List<Shop> Shop { get; set; }
+
+
+        public Product()
+        {
+        }
+
+        public Product(ViewModelProduct model)
+        {
+            Name = model.Name;
+            TotalDelivered = model.TotalDelivered;
+            Price = model.Price;
+            Description = model.Description;
+            Specification= model.Specification;
+            Brand = model.Brand;
+            SubcategoryId = model.SubcategoryId;
+            CategoryId = model.CategoryId;
+            ImgPath = model.ImgPath;
+
+        }
     }
 }
