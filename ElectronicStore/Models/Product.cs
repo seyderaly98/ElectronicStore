@@ -7,8 +7,6 @@ namespace ElectronicStore.Models
 {
     public class Product
     {
-
-
         public int Id { get; set; }
         public string Name { get; set; }
         public DateTime CreateDate { get; private set; } = DateTime.Now;
